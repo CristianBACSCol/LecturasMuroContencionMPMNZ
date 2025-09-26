@@ -1,73 +1,59 @@
-# LecturasMuroContencion
+# LecturasMuroContencionMPMNZ
 
-Sistema que captura lecturas del gateway y las almacena en un Excel mensual en C:\LecturasMuroContencion. Solo escribe equipos presentes en `excel_logger/nombres_map.csv`. La carpeta de salida se crea automáticamente si no existe.
+Captura lecturas del gateway y las guarda en un Excel mensual en `C:\LecturasMuroContencion`. Solo registra equipos definidos en `excel_logger/nombres_map.csv`. La carpeta de salida se crea automáticamente si no existe.
 
-## Variables de entorno (.env)
-
-Crear `.env` en la raíz (opcional):
+## Variables (.env en la raíz)
 ```
-# Dirección del gateway LoadSensing
 HOST_GATE=https://10.250.25.254
-
-# Token Basic (Base64 usuario:clave) — placeholder
 BASIC_TOKEN=REEMPLAZA_ESTE_TOKEN_BASE64
-
-# Carpeta de salida (por defecto: C:\LecturasMuroContencion)
 # OUTPUT_DIR=C:\LecturasMuroContencion
-
-# Intervalo de captura en horas
 INTERVAL_HOURS=6
 ```
 
-## Pasos (Windows, PowerShell)
-
-1) Crear entorno virtual en la raíz del repo:
+## Instalación y compilación (Windows, PowerShell)
+1) Crear venv
 ```
 python -m venv venv
 ```
-
-2) Activar entorno virtual:
+2) Activar venv
 ```
 .\venv\Scripts\Activate.ps1
 ```
-
-3) Instalar dependencias:
+3) Instalar dependencias
 ```
-pip install -r excel_logger\requirements.txt
+pip install -r requirements.txt
 ```
-
-4) Compilar EXE sin consola (oculto) desde `excel_logger/`:
+4) Compilar EXE sin ventana (desde `excel_logger/`)
 ```
 cd excel_logger
-pyinstaller --noconfirm --clean --noconsole --name LecturasMuroContencion --paths . --paths .. --add-data "nombres_map.csv;excel_logger" --collect-all openpyxl .\runner.py
+pyinstaller --noconfirm --clean --noconsole --name LecturasMuroContencionMPMNZ --paths . --paths .. --add-data "nombres_map.csv;excel_logger" --collect-all openpyxl .\runner.py
 ```
-Genera `dist\LecturasMuroContencion\LecturasMuroContencion.exe`.
+Resultado: `excel_logger\dist\LecturasMuroContencionMPMNZ\LecturasMuroContencionMPMNZ.exe`.
 
-## Servicio de Windows (NSSM)
+## Ejecutar en segundo plano
+- Manual (oculto) desde PowerShell:
+```
+Start-Process -WindowStyle Hidden -FilePath "C:\ruta\LecturasMuroContencionMPMNZ.exe"
+```
+- Servicio Windows (recomendado, inicia sin sesión):
+```
+# Copia la carpeta dist a C:\LecturasMuroContencionMPMNZ
+# Crea C:\LecturasMuroContencion si no existe
+# Instala NSSM en C:\nssm\nssm.exe
+C:\nssm\nssm.exe install LecturasMuroContencionMPMNZ C:\LecturasMuroContencionMPMNZ\LecturasMuroContencionMPMNZ.exe
+C:\nssm\nssm.exe set LecturasMuroContencionMPMNZ AppDirectory C:\LecturasMuroContencionMPMNZ
+C:\nssm\nssm.exe set LecturasMuroContencionMPMNZ Start SERVICE_AUTO_START
+C:\nssm\nssm.exe set LecturasMuroContencionMPMNZ AppStdout C:\LecturasMuroContencionMPMNZ\logs\service.out.log
+C:\nssm\nssm.exe set LecturasMuroContencionMPMNZ AppStderr C:\LecturasMuroContencionMPMNZ\logs\service.err.log
+sc start LecturasMuroContencionMPMNZ
+```
+Desinstalar:
+```
+sc stop LecturasMuroContencionMPMNZ
+C:\nssm\nssm.exe remove LecturasMuroContencionMPMNZ confirm
+```
 
-1) Copia `dist\LecturasMuroContencion\` a `C:\excel_logger\`
-2) Crea `C:\LecturasMuroContencion` (si no existe)
-3) Instala NSSM en `C:\nssm\nssm.exe`
-4) Instala el servicio (Administrador):
-```
-C:\nssm\nssm.exe install LecturasMuroContencion C:\excel_logger\LecturasMuroContencion.exe
-C:\nssm\nssm.exe set LecturasMuroContencion AppDirectory C:\excel_logger
-C:\nssm\nssm.exe set LecturasMuroContencion Start SERVICE_AUTO_START
-C:\nssm\nssm.exe set LecturasMuroContencion AppStdout C:\excel_logger\logs\service.out.log
-C:\nssm\nssm.exe set LecturasMuroContencion AppStderr C:\excel_logger\logs\service.err.log
-```
-5) Iniciar y verificar:
-```
-sc start LecturasMuroContencion
-sc qc LecturasMuroContencion
-```
-6) Recuperación ante fallos (opcional):
-```
-sc failure LecturasMuroContencion reset= 0 actions= restart/60000
-```
-7) Desinstalar:
-```
-sc stop LecturasMuroContencion
-C:\nssm\nssm.exe remove LecturasMuroContencion confirm
-```
+## Notas
+- PyInstaller es una herramienta de build, no está en `requirements.txt`.
+- Si ejecutas el EXE desde una consola visible y luego cierras esa ventana, el proceso terminará. Usa `Start-Process -WindowStyle Hidden` o instálalo como servicio para ejecutarlo oculto.
 
