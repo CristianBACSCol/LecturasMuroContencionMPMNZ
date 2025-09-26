@@ -27,11 +27,11 @@ Genera archivos mensuales como `LecturasMuroContencionMarzo2025.xlsx` con column
 
 ## Compilar a EXE (offline)
 
-1) Ejecuta el script de build:
+Compila en una sola línea desde `excel_logger/` (PowerShell):
 ```
-excel_logger/build_exe.bat
+pyinstaller --noconfirm --clean --name LecturasMuroContencion --paths . --paths .. --add-data "nombres_map.csv;excel_logger" --collect-all openpyxl .\runner.py
 ```
-Esto crea `dist/LecturasMuroContencion/LecturasMuroContencion.exe` (consola). Incluye `excel_logger/nombres_map.csv` y las dependencias necesarias.
+Genera `dist/LecturasMuroContencion/LecturasMuroContencion.exe`.
 
 2) Copia a la máquina offline el directorio `dist/LecturasMuroContencion/` completo. Puedes llevar también tu `.env` (opcional) para HOST y ruta de salida.
 
