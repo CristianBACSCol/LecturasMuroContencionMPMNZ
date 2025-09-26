@@ -31,9 +31,9 @@ Genera archivos mensuales como `LecturasMuroContencionMarzo2025.xlsx` con column
 ```
 excel_logger/build_exe.bat
 ```
-Esto crea `dist/excel_logger/excel_logger.exe` (consola). Incluye `excel_logger/nombres_map.csv` y las dependencias necesarias.
+Esto crea `dist/LecturasMuroContencion/LecturasMuroContencion.exe` (consola). Incluye `excel_logger/nombres_map.csv` y las dependencias necesarias.
 
-2) Copia a la máquina offline el directorio `dist/excel_logger/` completo junto con una carpeta `output/` vacía si deseas. Puedes llevar también tu `.env` (opcional) para HOST y ruta de salida.
+2) Copia a la máquina offline el directorio `dist/LecturasMuroContencion/` completo. Puedes llevar también tu `.env` (opcional) para HOST y ruta de salida.
 
 3) En la máquina destino, crea/edita `excel_logger/nombres_map.csv` según tu inventario y ejecuta `excel_logger.exe`. Los Excel se guardarán en `output/` junto al ejecutable (o en `OUTPUT_DIR` si está configurado).
 

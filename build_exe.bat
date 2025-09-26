@@ -14,13 +14,13 @@ if exist build rmdir /s /q build
 REM Empaquetar runner como consola, incluir archivo de nombres
 pyinstaller --noconfirm ^
   --clean ^
-  --name excel_logger ^
+  --name LecturasMuroContencion ^
   --paths . ^
   --add-data "excel_logger\\nombres_map.csv;excel_logger" ^
   --collect-all openpyxl ^
   excel_logger\\runner.py
 
 echo.
-echo Build finalizado. Ejecutable en dist\\excel_logger\\excel_logger.exe
+echo Build finalizado. Ejecutable en dist\\LecturasMuroContencion\\LecturasMuroContencion.exe
 endlocal
 
